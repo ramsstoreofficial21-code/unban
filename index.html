@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1">
+  <title>Permohonan Unbanned WA</title>
+  <style>
+    body{font-family:system-ui, -apple-system, Roboto, Arial; background:#f4f6f8; padding:20px}
+    .card{max-width:720px;margin:20px auto;background:#fff;padding:18px;border-radius:10px;box-shadow:0 8px 24px rgba(12,20,40,0.06)}
+    input,textarea,button{width:100%;padding:12px;margin-top:10px;border-radius:8px;border:1px solid #ddd;box-sizing:border-box}
+    button{background:#1976d2;color:#fff;border:0;cursor:pointer}
+    .muted{font-size:13px;color:#556;margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Permohonan Unbanned WhatsApp</h2>
+    <div class="muted">isi data lalu klik kirim</div>
+
+    <label for="name">Nama pemilik</label>
+    <input id="name" type="text" placeholder="nama pemilik">
+
+    <label for="phone">Nomor WhatsApp</label>
+    <input id="phone" type="text" placeholder="contoh 62812xxxxxxx">
+
+    <label for="details">Kronologi singkat</label>
+    <textarea id="details" rows="6">Halo Tim WhatsApp
+Saya memohon peninjauan dan pemulihan untuk nomor saya
+</textarea>
+
+    <button id="send">Kirim Permohonan</button>
+
+    <div id="status" style="margin-top:12px"></div>
+  </div>
+
+<script>
+document.getElementById('send').addEventListener('click', async function(){
+  const name = document.getElementById('name').value.trim()
+  const phone = document.getElementById('phone').value.trim()
+  const details = document.getElementById('details').value.trim()
+
+  if (!phone) {
+    document.getElementById('status').innerText = 'masukkan nomor terlebih dahulu'
+    return
+  }
+
+  const payload = {name, phone, details}
+
+  document.getElementById('status').innerText = 'mengirim permohonan harap tunggu'
+
+  try {
+    const res = await fetch('/api/send', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    })
+    const data = await res.json()
+    if (res.ok) {
+      document.getElementById('status').innerText = 'terkirim id ' + (data.messageId || '')
+    } else {
+      document.getElementById('status').innerText = 'gagal kirim ' + (data.error || '')
+    }
+  } catch (err) {
+    document.getElementById('status').innerText = 'gagal kirim periksa koneksi atau konfigurasi server'
+  }
+})
+</script>
+</body>
+</html>
